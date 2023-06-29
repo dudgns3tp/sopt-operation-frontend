@@ -1,4 +1,5 @@
-import React, { ChangeEvent, useMemo, useState } from 'react';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import CoreValueInput from '@/components/orgAdmin/AboutTab/AboutTabManagement/CoreValueInput';
 import {
@@ -10,6 +11,7 @@ import PartFilter from '@/components/orgAdmin/PartFilter';
 import { PartWithoutAll } from '@/components/orgAdmin/PartFilter';
 import TextField from '@/components/orgAdmin/TextField';
 import { putObject } from '@/utils/putObject';
+import TextFieldV2 from '@/components/orgAdmin/TextFieldV2';
 
 interface Props {
   aboutSopt: AboutSopt;
@@ -17,6 +19,7 @@ interface Props {
 }
 
 function AboutTabManagement({ aboutSopt, onHandleAboutSopt }: Props) {
+  const { register } = useForm();
   const [selectedPart, setSelectedPart] = useState<PartWithoutAll>('PLAN');
 
   const updateBannerImage = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +81,7 @@ function AboutTabManagement({ aboutSopt, onHandleAboutSopt }: Props) {
     setSelectedPart(part);
   };
 
-  const handleBannerImage = (key: keyof AboutSopt) => {
+  const handleTextField = (key: keyof AboutSopt) => {
     return ({ target: { value } }: ChangeEvent<HTMLTextAreaElement>) => {
       onHandleAboutSopt({ ...aboutSopt, [key]: value });
     };
@@ -159,10 +162,10 @@ function AboutTabManagement({ aboutSopt, onHandleAboutSopt }: Props) {
 
         <p>Title</p>
         <div className={'form_container'}>
-          <TextField
+          <TextFieldV2
             label={'ex. 32기 GO SOPT 소개'}
-            value={aboutSopt.title}
-            onChange={handleBannerImage('title')}
+            //value={aboutSopt.title}
+            {...register('title', { required: true })}
           />
         </div>
       </StContent>
@@ -170,10 +173,10 @@ function AboutTabManagement({ aboutSopt, onHandleAboutSopt }: Props) {
         <h2>핵심가치</h2>
         <p> 브랜딩 메시지</p>
         <div className={'form_container'}>
-          <TextField
+          <TextFieldV2
             label={'ex. 32기 GO SOPT의 열정이 되어주세요!!!!!'}
-            value={aboutSopt.coreDescription}
-            onChange={handleBannerImage('coreDescription')}
+            //value={aboutSopt.coreDescription}
+            {...register('coreDescription', { required: true })}
           />
         </div>
         {aboutSopt.coreValues.map((coreValue, index) => {
@@ -184,6 +187,7 @@ function AboutTabManagement({ aboutSopt, onHandleAboutSopt }: Props) {
               onChange={handleCoreValueImageAtIndex(index)}
               title={aboutSopt.coreValues[index].title}
               subTitle={aboutSopt.coreValues[index].subTitle}
+              index={index}
               onHandleTitleChange={handleUpdateCoreValueProperty(
                 index,
                 'title',

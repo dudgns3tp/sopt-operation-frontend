@@ -10,6 +10,9 @@ import {
 } from '@/components/orgAdmin/AboutTab/AboutTabManagement/CoreValueInput/style';
 import ImageSelect from '@/components/orgAdmin/ImageSelect';
 import TextField from '@/components/orgAdmin/TextField';
+import TextFieldV2 from '@/components/orgAdmin/TextFieldV2';
+import { register } from 'tsconfig-paths';
+import { useForm } from 'react-hook-form';
 
 interface Props {
   image: string | null;
@@ -19,6 +22,7 @@ interface Props {
   onHandleTitleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onHandleSubTitleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onRemoveImage: () => void;
+  index: number;
 }
 function CoreValueInput({
   title,
@@ -28,7 +32,9 @@ function CoreValueInput({
   image,
   onChange,
   onRemoveImage,
+  index,
 }: Props) {
+  const { register } = useForm();
   return (
     <StCoreValueInputContainer>
       <p>image (380 * 380)</p>
@@ -46,10 +52,9 @@ function CoreValueInput({
           <StMainTitleContainer>
             <StTypography>Title</StTypography>
             <StTextFieldContainer>
-              <TextField
+              <TextFieldV2
                 label={'ex.connection'}
-                value={title}
-                onChange={onHandleTitleChange}
+                {...register(`coreValue.${index}.title`, { required: true })}
                 multiline={false}
               />
             </StTextFieldContainer>
@@ -57,12 +62,11 @@ function CoreValueInput({
           <StSubTitleContainer>
             <StTypography>Sub Title</StTypography>
             <StTextFieldContainer>
-              <TextField
+              <TextFieldV2
                 label={
                   'ex. 이해를 바탕으로 사람들과 소통하여 연결될 수 있는 사람'
                 }
-                value={subTitle}
-                onChange={onHandleSubTitleChange}
+                {...register(`coreValue.${index}.subTitle`, { required: true })}
                 multiline
                 height={'120px'}
               />

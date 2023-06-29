@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import Footer from '@/components/common/Footer';
 import AboutTabAction from '@/components/orgAdmin/AboutTab/AboutTabAction';
@@ -48,6 +49,28 @@ const initialAboutSopt: AboutSopt = {
 
 function AboutTab() {
   const generation = 32; // todo Generation 정보 받아오기
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data: any) => {
+    console.log('onSubmit', data);
+    console.log('onSave!!');
+    //updateAboutSopt(aboutSopt);
+  };
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) =>
+      console.log('watch!!!!!', value, name, type),
+    );
+    return () => subscription.unsubscribe();
+  }, [watch]);
+  const watchAllFields = watch();
+  console.log('watchAllllll', watchAllFields);
+
   const [aboutSopt, setAboutSopt] = useState<AboutSopt>(initialAboutSopt);
   const { data, isError, isLoading, error } = useGetAboutSopt(
     generation,
@@ -105,21 +128,23 @@ function AboutTab() {
     <StAboutTabWrapper>
       {data && (
         <>
-          <AboutTabManagement
-            aboutSopt={aboutSopt}
-            onHandleAboutSopt={onHandleAboutSopt}
-          />
-          <Footer>
-            <AboutTabAction
-              onSave={() => {
-                updateAboutSopt(aboutSopt);
-              }}
-              onPublish={() => {
-                publishAboutSopt(generation);
-              }}
-              isPublished={aboutSopt.isPublished}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <AboutTabManagement
+              aboutSopt={aboutSopt}
+              onHandleAboutSopt={onHandleAboutSopt}
             />
-          </Footer>
+            <Footer>
+              <AboutTabAction
+                onSave={() => {
+                  // updateAboutSopt(aboutSopt);
+                }}
+                onPublish={() => {
+                  publishAboutSopt(generation);
+                }}
+                isPublished={aboutSopt.isPublished}
+              />
+            </Footer>
+          </form>
         </>
       )}
       {snackBar && (
